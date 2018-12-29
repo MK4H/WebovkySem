@@ -1,0 +1,15 @@
+.amnt_text_holder {
+    display: unset;
+}
+
+.amnt_edit_holder {
+    display: none;
+}
+
+.normal_buttons {
+    display: unset;
+}
+
+.edit_buttons {
+    display: none;
+}
