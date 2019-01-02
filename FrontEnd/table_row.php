@@ -9,7 +9,7 @@
             <?= htmlspecialchars($amount)?>
         </div>
         <div class="amnt_edit_holder">
-            <input class="amnt_edit" type="number" name="amount"/>
+            <input class="amnt_edit" type="number" name="amount" required/>
         </div>              
     </td>
     <td><?php require("FrontEnd/edit_td.php")?></td>

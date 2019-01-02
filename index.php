@@ -4,7 +4,7 @@
     require_once("FrontEnd/functions.php");
 
     if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET') {
-        require("FrontEnd/main_page.php");
+        get_page();
     }
 	else if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' && isset($_POST['action'])) {
         //Dispatch to the correct handler

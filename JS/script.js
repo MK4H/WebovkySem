@@ -23,7 +23,7 @@ function reportResponseError(heading, response) {
         Status: ${response.status} ${response.statusText}
         Message: ${bodyText}
         `;
-            alert(text);
+        alert(text);
     });   
 }
 
@@ -41,7 +41,7 @@ function deleteRow(row) {
         if (!response.ok) {
             throw response;
         }
-        response.text();
+        return response.text();
     })
     .then(html => {
         let newTable = elementFromHTML(html);
@@ -81,7 +81,7 @@ function drop(event) {
         if (!response.ok) {
             throw response;
         }
-        response.text();
+        return response.text();
     })
     .then(html => {
         let newTable = elementFromHTML(html);
@@ -131,7 +131,7 @@ function saveEditAmount(row) {
         if (!response.ok) {
             throw response;
         }
-        response.text();
+        return response.text();
     })
     .then(html => {
         let newRow = elementFromHTML(html);

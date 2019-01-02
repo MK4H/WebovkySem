@@ -1,5 +1,7 @@
 <?php
 
+require_once("Logic/exceptions.php");
+
 class ShopData {
 
     //TODO: Make lastError method, that returns last error that happened
@@ -77,7 +79,7 @@ class ShopData {
     public function getSuggestions(string $forText) : array {
         try {
             if (!is_string($forText)) {              
-                throw new ArgumentException("Expected string argument");
+                throw new ArgumentException("Expected string argument", 500);
             }
     
             $this->sugg_stmt->bindValue(":name", "%$forText%", PDO::PARAM_STR);         
@@ -86,7 +88,7 @@ class ShopData {
             return $this->sugg_stmt->fetchAll(PDO::FETCH_COLUMN, 0);
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
     }
 
@@ -105,7 +107,7 @@ class ShopData {
             return $val;
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
     }
 
@@ -126,7 +128,7 @@ class ShopData {
             $this->get_item_stmt->execute();
     
             if (!($val = $this->get_item_stmt->fetch())) {
-                throw new ArgumentException("Item with this id does not exist");
+                throw new ArgumentException("Item with this id does not exist", 422);
             }
 
             $filters = [
@@ -151,14 +153,14 @@ class ShopData {
                 ]
             ];
             
-            if (($val = filter_var_array($var, $filters)) === false) {
-                throw new DataException("Invalid data retrieved from the DB");
+            if (($val = filter_var_array($val, $filters)) === false) {
+                throw new DataException("Invalid data retrieved from the DB", 500);
             }
     
             return $val;
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
     }
 
@@ -171,21 +173,25 @@ class ShopData {
      * 
      * @param string $type_name Name of the type of the item to add to the list
      * @param integer $amount Initial amount of the item
-     * @return boolean True if the operation was sucessful
+     * @return bool True if the operation was sucessful
      * @throws DBException Thrown when there was an error in the DB
-     * @throws ArgumentException Thrown when the $amount is <= 0
+     * @throws ArgumentException Thrown when the $amount is <= 0 or $type_name is empty string 
      * @throws DataException Thrown when the data retrieved from DB were not valid
      */
-    public function addItem(string $type_name, int $amount) : boolean {
+    public function addItem(string $type_name, int $amount) : bool {
         if ($amount <= 0) {
-            throw new ArgumentException("Amount should be greater than 0");
+            throw new ArgumentException("Amount should be greater than 0", 422);
+        }
+
+        if ($type_name === '') {
+            throw new ArgumentException("Type name cannot be empty", 422);
         }
 
         try {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Could not begin transaction", 0, $e);
+            throw new DBException("DB: Could not begin transaction", 500, $e);
         }
        
         try {
@@ -198,7 +204,7 @@ class ShopData {
         }
         catch (PDOException $e) {
             $this->conn->rollback();
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
             $this->conn->rollback();
@@ -212,17 +218,17 @@ class ShopData {
      * Is atomic, on error changes nothing and results in exception.
      *
      * @param integer $id ID of the item to remove
-     * @return boolean True when the operation was sucessful
+     * @return bool True when the operation was sucessful
      * @throws DBException Thrown when there was an error in the DB
      * @throws ArgumentException Thrown when the item with the id $id does not eist
      * @throws DataException Thrown when the data retrieved from DB were not valid
      */
-    public function removeItem(int $id) : boolean {
+    public function removeItem(int $id) : bool {
         try {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Could not begin transaction", 0, $e);
+            throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
         try {  
@@ -234,7 +240,7 @@ class ShopData {
         }
         catch (PDOException $e) {
             $this->conn->rollback();
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
             $this->conn->rollback();
@@ -249,36 +255,36 @@ class ShopData {
      *
      * @param integer $id ID of the item to change
      * @param integer $new_amount New amount of the item with id $id
-     * @return boolean True if the operation succeded
+     * @return bool True if the operation succeded
      * @throws DBException Thrown when there was an error in the DB
      * @throws ArgumentException Thrown when the item with the $id does not exist
      */
-    public function setItemAmount(int $id, int $new_amount) : boolean {
+    public function setItemAmount(int $id, int $new_amount) : bool {
        
 
         try {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Could not begin transaction", 0, $e);
+            throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
         try {
             if ($new_amount <= 0) {
                 if ($this->stRemoveItemFromList($id) < 1) {
-                    throw new ArgumentException("Item with the given id does not exist");
+                    throw new ArgumentException("Item with the given id does not exist", 422);
                 }          
             }
             else {
                 if ($this->stSetItemAmount($id, $new_amount) < 1) {
-                    throw new ArgumentException("Item with the given id does not exist");
+                    throw new ArgumentException("Item with the given id does not exist", 422);
                 }  
             }
             return $this->conn->commit();
         }
         catch (PDOException $e) {
             $this->conn->rollback();
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
             $this->conn->rollback();
@@ -293,18 +299,18 @@ class ShopData {
      *
      * @param integer $id ID of the item to move
      * @param integer $new_pos New position to move the item to
-     * @return boolean True if the operation was succesful
+     * @return bool True if the operation was succesful
      * @throws DBException Thrown when there was an error during the execution in the DB
      * @throws ArgumentException Thrown when item with $id does not exist or $new_pos is out of bounds
      * @throws DataException Thrown when the data retrieved from DB were not valid
      */
-    public function changePosition(int $id, int $new_pos) : boolean {
+    public function changePosition(int $id, int $new_pos) : bool {
        
         try {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
-            throw new DBException("DB: Could not begin transaction", 0, $e);
+            throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
         try {
@@ -327,7 +333,7 @@ class ShopData {
                 return $this->conn->commit();
             }
             if ($this->stChangePositionsFromTo($lower, $upper, $change) !== $upper - $lower) {
-                throw new ArgumentException("New position is out of bounds");
+                throw new ArgumentException("New position is out of bounds", 422);
             }
 
             $this->stSetItemPosition($id, $new_pos);
@@ -336,7 +342,7 @@ class ShopData {
         }
         catch(PDOException $e) {
             $this->conn->rollback();
-            throw new DBException("DB: Internal error", 0, $e);
+            throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
             $this->conn->rollback();
@@ -359,12 +365,12 @@ class ShopData {
         $this->get_item_amnt_stmt->execute();
 
         if (!($amount = $this->get_item_amnt_stmt->fetch())) {
-            throw new ArgumentException("Item with the given id does not exist");
+            throw new ArgumentException("Item with the given id does not exist", 422);
         }
 
         //TODO: Flags to filter_var
         if (($amount = filter_var($amount, FILTER_VALIDATE_INT)) === null) {
-            throw new DataException("Invalid data retrived from DB");
+            throw new DataException("Invalid data retrived from DB", 500);
         }
 
         return $amount;
@@ -417,16 +423,16 @@ class ShopData {
         $this->get_item_type_id_stmt->execute();
 
         if (!($db_res = $this->get_item_type_id_stmt->fetch())) {
-            throw new ArgumentException("Item type with this name does not exist");
+            throw new ArgumentException("Item type with this name does not exist", 422);
         }
 
         if (!isset($db_res['id'])) {
-            throw new DBException("DB: Internal error");
+            throw new DBException("DB: Internal error", 500);
         }
 
         //TODO: Add flags to validation
         if (($value = filter_var($db_res['id'], FILTER_VALIDATE_INT)) === null) {
-            throw new DataException("Invalid data stored in the database");
+            throw new DataException("Invalid data stored in the database", 500);
         }
         return $value;
     }
@@ -441,7 +447,7 @@ class ShopData {
      * @return void
      * @throws PDOException
      */
-    private function stAddOrUpdateToList(int $type_id, int $amount, int $position) : boolean {
+    private function stAddOrUpdateToList(int $type_id, int $amount, int $position) {
         $this->add_or_update_list_stmt->bindValue(':type_id', $type_id, PDO::PARAM_INT);
         $this->add_or_update_list_stmt->bindValue(':amount', $amount, PDO::PARAM_INT);
         $this->add_or_update_list_stmt->bindValue(':position', $position, PDO::PARAM_INT);
@@ -478,7 +484,7 @@ class ShopData {
         $this->get_count_items_stmt->execute();
 
         if (!($db_res = $this->get_count_items_stmt->fetch())) {
-            throw new DBException("DB failed to count the items");
+            throw new DBException("DB failed to count the items", 500);
         }
 
         //This is not user data, dont need to validate
@@ -500,14 +506,14 @@ class ShopData {
         $this->get_pos_stmt->execute();
 
         if (!($db_res = $this->get_pos_stmt->fetch())) {
-            throw new ArgumentException("Item with given ID does not exist");
+            throw new ArgumentException("Item with given ID does not exist", 422);
         }
         $position = $db_res['position'];
 
         //TODO: Add flags
         $val = filter_var($position, FILTER_VALIDATE_INT);
         if ($val === null) {
-            throw new DataException("Invalid data stored in DB");
+            throw new DataException("Invalid data stored in DB", 500);
         }
         return $val;
     }
