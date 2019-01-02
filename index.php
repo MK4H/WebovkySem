@@ -1,6 +1,7 @@
 <?php
-    include("Logic/requests.php");
-    include_once("Logic/data_model.php");
+    require_once("Logic/requests.php");
+    require_once("Logic/data_model.php");
+    require_once("FrontEnd/functions.php");
 
     if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET') {
         require("FrontEnd/main_page.php");
@@ -23,17 +24,16 @@
             delete_item($data);
         }
         else {
-            header("HTTP/1.0 400 Bad Request");
-            echo "Invalid post method";
+            //TODO: Return proper html
+            out_text_error(400, "Invalid POST method");    
         }
     }
     else if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
-        header("HTTP/1.0 400 Bad Request");
-        echo "Invalid post method";
+        out_text_error(400, "Invalid POST method");        
+        //TODO: Return proper html
     }
     else {
-        //TODO: Unknown HTTP method
-        header("HTTP/1.0 405 Method Not Allowed");
-        echo "Unknown method sent";
+        out_text_error(405, "Unknown method");
+        //TODO: Return proper html
     }
 

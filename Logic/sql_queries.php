@@ -37,7 +37,7 @@ $set_item_amnt_query = <<<EOT
     WHERE id = :id
 EOT;
 
-$add_item_type_query = <<<EOT
+$try_add_item_type_query = <<<EOT
     INSERT IGNORE INTO items(name)
     VALUES (:name)
 EOT;
@@ -48,7 +48,7 @@ $get_item_type_id_query = <<<EOT
     WHERE name = :name
 EOT;
 
-$add_item_to_list_query = <<<EOT
+$add_or_update_to_list_query = <<<EOT
     INSERT INTO list(item_id, amount, position)
     VALUES (:type_id, :amount, :position)
     ON DUPLICATE KEY UPDATE amount = amount + :amount
