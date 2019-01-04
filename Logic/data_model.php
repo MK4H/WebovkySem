@@ -260,8 +260,6 @@ class ShopData {
      * @throws ArgumentException Thrown when the item with the $id does not exist
      */
     public function setItemAmount(int $id, int $new_amount) : bool {
-       
-
         try {
             $this->conn->beginTransaction();
         }

@@ -30,10 +30,9 @@ function reportResponseError(heading, response) {
 function deleteRow(row) {
     let item_id = row.getAttribute("item_id");
     let data = new FormData();
-    data.append("action","delete_item");
     data.append("item_id", item_id);
 
-    fetch("/index.php", {
+    fetch("/index.php?action=delete_item", {
         method: "POST",
         body: data
     })
@@ -69,11 +68,10 @@ function drop(event) {
     let endPos = this.getAttribute("pos");
 
     let data = new FormData();
-    data.append("action", "change_position");
     data.append("item_id", dragged_item_id);
     data.append("end_pos", endPos);
 
-    fetch("/index.php", {
+    fetch("/index.php?action=change_position", {
         method: "POST",
         body: data
     })
@@ -119,11 +117,10 @@ function saveEditAmount(row) {
     //TODO: Validate that its a positive number
     let new_amnt = amnt_edit.value;
 
-    data.append("action","change_amount");
     data.append("item_id", item_id);
     data.append("new_amount", new_amnt);
 
-    fetch("/index.php", {
+    fetch("/index.php?action=change_amount", {
         method: "POST",
         body: data
     })

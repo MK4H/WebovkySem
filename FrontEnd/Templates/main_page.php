@@ -16,12 +16,12 @@
     <h1>Shopping List</h1>
     <section>
         <div id="table_div">
-            <?php require("FrontEnd/table.php")?>  
+            <?php $this->incl_table() ?>  
         </div> 
     </section>
     <section>
         <h2>Add Item</h2>
-        <?php require("FrontEnd/add_item_form.php")?>
+        <?php $this->incl_add_item_form() ?>
     </section>
     </main>
 </body>
