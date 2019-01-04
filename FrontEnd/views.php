@@ -35,7 +35,7 @@ class TableRowView extends View {
     }
 
     private function incl_edit_td() {
-        $edit_td->render();
+        $this->edit_td->render();
     }
 }
 
@@ -57,9 +57,9 @@ class TableView extends View {
     public function __construct(ShopData $data) {
         $shopping_list = $data->getShoppingList();
 
-        $this->row = [];
+        $this->rows = [];
         foreach ($shopping_list as $row_data) {
-            $this->row[] = new TableRowView($row_data['id'], $row_data['name'], $row_data['amount'], $row_data['pos']);
+            $this->rows[] = new TableRowView($row_data['id'], $row_data['name'], $row_data['amount'], $row_data['position']);
         }
         
         $this->table_heading = new TableHeadingView();
@@ -82,7 +82,7 @@ class TableView extends View {
 
 class AddItemFormView extends View {
     
-    private $values;
+    private $suggs;
     private $preset_typename;
     private $preset_amount;
 
@@ -90,10 +90,10 @@ class AddItemFormView extends View {
         //TODO: Catch possible exceptions and show them
         $suggestions = $data->getSuggestions("");
 
-        $this->values = [];
+        $this->suggs = [];
 
-        foreach ($suggestions as $value) {
-            $this->values[] = htmlspecialchars($value);
+        foreach ($suggestions as $sugg) {
+            $this->suggs[] = htmlspecialchars($sugg);
         }
 
         if (isset($preset_values['type_name'])) {
@@ -130,6 +130,10 @@ class PageView extends View {
     public function __construct(ShopData $data, array $preset_values) {
         $this->table = new TableView($data);
         $this->add_item_form = new AddItemFormView($data, $preset_values);
+    }
+
+    public function render() {
+        require("FrontEnd/Templates/main_page.php");
     }
 
     private function incl_table() {

@@ -1,7 +1,8 @@
 <?php
     require_once("FrontEnd/errors.php");
     require_once("Logic/data_model.php");
-    require_once("Logic/requests.php");
+    require_once("Logic/browser_requests.php");
+    require_once("Logic/async_requests.php");
     require_once("FrontEnd/views.php");
 
 
@@ -30,6 +31,7 @@
     if (!isset($_GET['action'])) {
         if (isset($method_handlers['default'])) {
             $method_handlers['default']->execute();
+            exit;
         }
         else {
             end_with_HTML_error(400, "Invalid request to ${method}"); 

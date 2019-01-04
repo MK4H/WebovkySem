@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . 'request_base.php');
+require_once('Logic/request_base.php');
 
 class AddItemRequest extends Request {
     private $data;
@@ -12,7 +12,7 @@ class AddItemRequest extends Request {
         $type_name = filter_input(INPUT_POST, 'type_name');
         $amount = filter_input(INPUT_POST, 'amount', FILTER_VALIDATE_INT);
     
-        if (($errors = check_params_add($type_name, $amount)) !== true) {
+        if (($errors = $this->check_params($type_name, $amount)) !== true) {
             $url_params = $this->encode_url_params($errors, $type_name, $amount);
             header("Location: index.php?${url_params}", true, 303);
             return;
@@ -24,18 +24,18 @@ class AddItemRequest extends Request {
         catch(Exception $e) {
             end_with_HTML_error_ex($e);
         }
-         
+
         header('Location: index.php', true, 303);
     }
 
     protected function check_params($type_name, $amount) {
         $errors = [];
-        if (check_param($errors, 'type_name', $type_name) && $type_name === '') {
+        if ($this->check_param($errors, 'type_name', $type_name) && $type_name === '') {
             $errors['type_name'] = 'empty';
         }
     
         
-        if (check_param($errors, 'amount', $amount) && $amount <= 0) {
+        if ($this->check_param($errors, 'amount', $amount) && $amount <= 0) {
             $errors['amount'] = 'lezero';
         }
     
@@ -56,17 +56,17 @@ class AddItemRequest extends Request {
     
     protected function encode_url_params(array $errors, $type_name, $amount) {
         if (isset($errors['type_name'])) {
-            $params = append_to_params('', 'type_name_error', $errors['type_name']);
+            $params = $this->append_to_params('', 'type_name_error', $errors['type_name']);
         }
         else {
-            $params = append_to_params('', 'type_name', $type_name);
+            $params = $this->append_to_params('', 'type_name', $type_name);
         }
     
         if (isset($errors['amount'])) {
-            $params = append_to_params($params, 'amount_error', $errors['amount']);
+            $params = $this->append_to_params($params, 'amount_error', $errors['amount']);
         }
         else {
-            $params = append_to_params($params, 'amount', $amount);
+            $params = $this->append_to_params($params, 'amount', $amount);
         }
     
         return $params;

@@ -1,9 +1,4 @@
 <?php
-require_once("Logic/exceptions.php");
-require_once("Logic/data_model.php");
-require_once("FrontEnd/functions.php");
-
-
 
 abstract class Request {
     

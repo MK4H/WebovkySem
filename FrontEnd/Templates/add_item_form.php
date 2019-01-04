@@ -4,8 +4,8 @@
         <input id="type_name" list="item_types" name="type_name" required <?= $this->preset_typename ?> />   
         <datalist id="item_types">
             <?php 
-                foreach ($this->options as $option) {
-                    echo "<option value=\"${option}\"/>";
+                foreach ($this->suggs as $sugg) {
+                    echo "<option value=\"${sugg}\"/>";
                 }
              ?>
         </datalist>
