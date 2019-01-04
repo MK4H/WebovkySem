@@ -22,7 +22,7 @@ class ChangeAmountRequest extends Request {
             $item = $this->data->getItem($item_id);
         }
         catch(Exception $e) {
-            end_with_TEXT_error($e);
+            end_with_TEXT_error_ex($e);
         }
     
         $table_row = new TableRowView($item['id'], $item['position'], $item['name'], $item['amount']);
@@ -61,7 +61,7 @@ class ChangePositionRequest extends Request {
             $this->data->changePosition($item_id, $end_pos);
         }
         catch(Exception $e) {
-            end_with_TEXT_error($e);
+            end_with_TEXT_error_ex($e);
         }
 
         
@@ -99,7 +99,7 @@ class DeleteItemRequest extends Request {
             $this->data->removeItem($item_id);
         }
         catch(Exception $e) {
-            end_with_TEXT_error($e);
+            end_with_TEXT_error_ex($e);
         }
     
         $table = new TableView($this->data);

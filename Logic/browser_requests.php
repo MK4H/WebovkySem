@@ -21,19 +21,10 @@ class AddItemRequest extends Request {
         try {
             $this->data->addItem($type_name, $amount);
         }
-        catch(DBException $e) {
-            //TODO: Error screen
-            out_text_error($e->getCode(), $e->getMessage());
+        catch(Exception $e) {
+            end_with_HTML_error_ex($e);
         }
-        catch(DataException $e) {
-            //TODO: Error screen
-            out_text_error($e->getCode(), $e->getMessage());
-        }
-        catch(ArgumentException $e) {
-            //TODO: Error screen
-            out_text_error($e->getCode(), $e->getMessage());
-        }
-    
+         
         header('Location: index.php', true, 303);
     }
 
