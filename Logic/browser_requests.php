@@ -1,5 +1,6 @@
 <?php
 require_once('Logic/request_base.php');
+require_once('FrontEnd/errors.php');
 
 class AddItemRequest extends Request {
     private $data;
@@ -93,6 +94,10 @@ class GetPageRequest extends Request {
             $preset_values['type_name_error'] = urldecode($type_name_error);
         }
 
+        if ($type_name !== null && $type_name_error !== null) {
+            end_with_HTML_error(422, "Type name and type name error cannot be both set", "Malformed query", "Malformed query");
+        }
+
         $amount = filter_input(INPUT_GET,'amount', FILTER_VALIDATE_INT);
         if ($amount !== null && $amount !== false) {
             $preset_values['type_name_error'] = urldecode($type_name_error);
@@ -103,8 +108,18 @@ class GetPageRequest extends Request {
             $preset_values['amount_error'] = urldecode($amount_error);
         }
 
-        //TODO: Catch exceptions
-        $page = new PageView($this->data, $preset_values);
+        if ($amount !== null && $amount_error !== null) {
+            end_with_HTML_error(422, "Amount and amount error cannot be both set", "Malformed query", "Malformed query");
+        }
+        
+
+        try {
+            $page = new PageView($this->data, $preset_values);
+        }
+        catch(Exception $e) {
+            end_with_HTML_error_ex($e);
+        }
+        //Should not throw exception
         $page->render();
     }
 }

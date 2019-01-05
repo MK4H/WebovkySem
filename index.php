@@ -1,11 +1,11 @@
 <?php
-    require_once("FrontEnd/errors.php");
-    require_once("Logic/data_model.php");
-    require_once("Logic/browser_requests.php");
-    require_once("Logic/async_requests.php");
-    require_once("FrontEnd/views.php");
+require_once("FrontEnd/errors.php");
+require_once("Logic/data_model.php");
+require_once("Logic/browser_requests.php");
+require_once("Logic/async_requests.php");
+require_once("FrontEnd/views.php");
 
-
+try {
     $data = new ShopData();
 
     $handlers = [
@@ -24,7 +24,6 @@
 
     if (!isset($handlers[$method])) {
         end_with_HTML_error(405, "Unsupported method ${method}");
-        //TODO: Return proper html
     }
     
     $method_handlers = $handlers[$method];
@@ -45,4 +44,11 @@
     }
 
     $method_handlers[$action]->execute();
+}
+catch(Exception $e) {
+    $message = $e->getMessage();
+    error_log("Uncaught exception: ${message}\n");
+    end_with_HTML_error(500, $e->getMessage(), "Uncaught error", "Uncaught error");
+} 
+   
 

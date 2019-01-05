@@ -107,6 +107,7 @@ class ShopData {
             return $val;
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
     }
@@ -154,12 +155,14 @@ class ShopData {
             ];
             
             if (($val = filter_var_array($val, $filters)) === false) {
+                $this->logDataError("getItem");
                 throw new DataException("Invalid data retrieved from the DB", 500);
             }
     
             return $val;
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
     }
@@ -191,6 +194,7 @@ class ShopData {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Could not begin transaction", 500, $e);
         }
        
@@ -204,6 +208,7 @@ class ShopData {
         }
         catch (PDOException $e) {
             $this->conn->rollback();
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
@@ -228,6 +233,7 @@ class ShopData {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
@@ -240,6 +246,7 @@ class ShopData {
         }
         catch (PDOException $e) {
             $this->conn->rollback();
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
@@ -264,6 +271,7 @@ class ShopData {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
@@ -282,6 +290,7 @@ class ShopData {
         }
         catch (PDOException $e) {
             $this->conn->rollback();
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
@@ -308,6 +317,7 @@ class ShopData {
             $this->conn->beginTransaction();
         }
         catch (PDOException $e) {
+            $this->logDBError($e);
             throw new DBException("DB: Could not begin transaction", 500, $e);
         }
 
@@ -340,6 +350,7 @@ class ShopData {
         }
         catch(PDOException $e) {
             $this->conn->rollback();
+            $this->logDBError($e);
             throw new DBException("DB: Internal error", 500, $e);
         }
         catch (Exception $e) {
@@ -368,6 +379,7 @@ class ShopData {
 
         //TODO: Flags to filter_var
         if (($amount = filter_var($amount, FILTER_VALIDATE_INT)) === null) {
+            $this->logDataError("getItemAmount");
             throw new DataException("Invalid data retrived from DB", 500);
         }
 
@@ -430,6 +442,7 @@ class ShopData {
 
         //TODO: Add flags to validation
         if (($value = filter_var($db_res['id'], FILTER_VALIDATE_INT)) === null) {
+            $this->logDataError("ID was not int or not present");
             throw new DataException("Invalid data stored in the database", 500);
         }
         return $value;
@@ -509,8 +522,13 @@ class ShopData {
         $position = $db_res['position'];
 
         //TODO: Add flags
-        $val = filter_var($position, FILTER_VALIDATE_INT);
-        if ($val === null) {
+        $val = filter_var($position, FILTER_VALIDATE_INT, [
+            'options' => [
+                'min_range' => 0
+            ]
+        ]);
+        if ($val === null || $val === false) {
+            $this->logDataError("Position was not present or was not valid");
             throw new DataException("Invalid data stored in DB", 500);
         }
         return $val;
@@ -588,5 +606,20 @@ class ShopData {
         $this->change_pos_upto_stmt->execute();
 
         return $this->change_pos_upto_stmt->rowCount();
+    }
+
+    /**
+     * Logs database error
+     *
+     * @param PDOException $e Exception describing the error
+     * @return void
+     */
+    private function logDBError(PDOException $e) {
+        $message = $e->getMessage();
+        error_log("DB error: ${e}");
+    }
+
+    private function logDataError(string $message) {
+        error_log("DB data error: $message");
     }
 }

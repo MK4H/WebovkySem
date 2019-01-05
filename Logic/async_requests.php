@@ -14,7 +14,7 @@ class ChangeAmountRequest extends Request {
         $new_amnt = filter_input(INPUT_POST, 'new_amount', FILTER_VALIDATE_INT);
     
         if (($errors = $this->check_params($item_id, $new_amnt)) !== true) {     
-            end_with_TEXT_error(422, get_text($errors));
+            end_with_TEXT_error(422, $this->get_text($errors));
         }
     
         try {
@@ -33,8 +33,8 @@ class ChangeAmountRequest extends Request {
         $errors = [];
         $this->check_param($errors, 'item_id', $item_id);
     
-        if ($this->check_param($errors, 'new_amnt', $new_amnt) && $new_amnt < 0) {
-            $errors['new_amnt'] = 'ltzero';
+        if ($this->check_param($errors, 'new_amnt', $new_amnt) && $new_amnt <= 0) {
+            $errors['new_amnt'] = 'lezero';
         }
     
         return count($errors) !== 0 ? $errors : true;
@@ -53,7 +53,7 @@ class ChangePositionRequest extends Request {
         $end_pos = filter_input(INPUT_POST,'end_pos', FILTER_VALIDATE_INT);
     
         if (($errors = $this->check_params($item_id, $end_pos)) !== true) {    
-            end_with_TEXT_error(422, get_text($errors));
+            end_with_TEXT_error(422, $this->get_text($errors));
         }
     
     
@@ -92,7 +92,7 @@ class DeleteItemRequest extends Request {
         $item_id = filter_input(INPUT_POST,'item_id', FILTER_VALIDATE_INT);
 
         if (($errors = $this->check_params($item_id)) !== true) {   
-            end_with_TEXT_error(422, get_text($errors));
+            end_with_TEXT_error(422, $this->get_text($errors));
         }
     
         try {

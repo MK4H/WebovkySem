@@ -14,12 +14,12 @@
 <body>
     <main>
     <h1>Shopping List</h1>
-    <section>
+    <section id="list_sec">
         <div id="table_div">
             <?php $this->incl_table() ?>  
         </div> 
     </section>
-    <section>
+    <section id="add_item_sec">
         <h2>Add Item</h2>
         <?php $this->incl_add_item_form() ?>
     </section>

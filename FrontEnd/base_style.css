@@ -1,15 +1,140 @@
-.amnt_text_holder {
-    display: unset;
+body {
+    font: 16pt "Calibry", "sans-serif";
+    background-color: azure;
 }
 
-.amnt_edit_holder {
-    display: none;
+main {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.normal_buttons {
-    display: unset;
+h1, h2, h3 {
+    text-align: center;
 }
 
-.edit_buttons {
-    display: none;
+/*
+Table style
+*/
+table, th, td {
+    border-collapse: collapse;
+}
+
+#main_table {
+    border: 3px solid black;
+    width: 100%;
+}
+
+th {
+    border: 3px solid black;
+    font-size: 16pt;
+    text-align: center
+}
+
+td {
+    border: 1px solid black;
+}
+
+#main_table tbody tr {
+    background-color: white;
+}
+
+#main_table tbody tr:nth-child(2n) {
+    background-color: wheat;
+}
+
+.name_td {
+    text-align: left;
+}
+
+.amnt_td {
+    text-align: center;
+    width: 10em;
+}
+
+.edit_td {
+    width: 7em;
+}
+
+.amnt_text_holder, .amnt_edit_holder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.amnt_edit {
+    text-align: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.normal_buttons, .edit_buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+.button {
+    border: none;
+    text-decoration: none;
+    color: white;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 1px 1px;
+}
+
+.edit_button {
+    background-color: peru;
+}
+
+.delete_button {
+    background-color: red;
+}
+
+.save_button {
+    background-color: green;
+}
+
+.cancel_button {
+    background-color: orange;
+}
+
+/*
+Add item form style
+*/
+#add_item_form {
+    margin: auto;
+    padding: 2px;
+    border: 1px solid black;
+    width: 15em;
+}
+
+#add_item_form input[type="submit"] {
+    display: block;
+    margin: 5px auto;
+}
+
+#add_item_form div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background: lightblue;
+    margin: 5px auto;
+}
+
+.error {
+    border-color: red;
+    background-color: indianred;
 }
