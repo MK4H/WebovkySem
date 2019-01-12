@@ -2,7 +2,9 @@
 
 abstract class Request {
     
-    public abstract function execute();
+    public abstract function execute(Shop $data);
+
+    public abstract function endWithError(Exception $e);
 
     protected function check_param(array &$errors, string $name, $value) {
         if ($value === null) {

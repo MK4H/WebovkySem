@@ -2,14 +2,18 @@
 require_once('Logic/request_base.php');
 require_once('FrontEnd/errors.php');
 
-class AddItemRequest extends Request {
-    private $data;
+abstract class BrowserRequest extends Request {
+    public function endWithError(Exception $e) {
+        end_with_HTML_error_ex($e);
+    }
+}
 
-    public function __construct(ShopData $shop_data) {
-        $this->data = $shop_data;
+class AddItemRequest extends BrowserRequest {
+
+    public function __construct() {
     }
 
-    public function execute() {
+    public function execute(Shop $data) {
         $type_name = filter_input(INPUT_POST, 'type_name');
         $amount = filter_input(INPUT_POST, 'amount', FILTER_VALIDATE_INT);
     
@@ -20,7 +24,7 @@ class AddItemRequest extends Request {
         }
     
         try {
-            $this->data->addItem($type_name, $amount);
+            $data->addItem($type_name, $amount);
         }
         catch(Exception $e) {
             end_with_HTML_error_ex($e);
@@ -74,14 +78,13 @@ class AddItemRequest extends Request {
     }
 }
 
-class GetPageRequest extends Request {
-    private $data;
+class GetPageRequest extends BrowserRequest {
 
-    public function __construct(ShopData $shop_data) {
-        $this->data = $shop_data;
+
+    public function __construct() {
     }
 
-    public function execute() {
+    public function execute(Shop $data) {
         //TODO: React if the query params are wrong
         $preset_values = [];
         $type_name = filter_input(INPUT_GET,'type_name');
@@ -114,7 +117,7 @@ class GetPageRequest extends Request {
         
 
         try {
-            $page = new PageView($this->data, $preset_values);
+            $page = new PageView($data, $preset_values);
         }
         catch(Exception $e) {
             end_with_HTML_error_ex($e);

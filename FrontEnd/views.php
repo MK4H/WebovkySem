@@ -54,7 +54,7 @@ class TableView extends View {
     private $rows;
     private $table_heading;
 
-    public function __construct(ShopData $data) {
+    public function __construct(Shop $data) {
         $shopping_list = $data->getShoppingList();
 
         $this->rows = [];
@@ -86,7 +86,7 @@ class AddItemFormView extends View {
     private $preset_typename;
     private $preset_amount;
 
-    public function __construct(ShopData $data, array $preset_values) {
+    public function __construct(Shop $data, array $preset_values) {
         //TODO: Catch possible exceptions and show them
         $suggestions = $data->getSuggestions("");
 
@@ -127,7 +127,7 @@ class PageView extends View {
     private $table;
     private $add_item_form;
 
-    public function __construct(ShopData $data, array $preset_values) {
+    public function __construct(Shop $data, array $preset_values) {
         $this->table = new TableView($data);
         $this->add_item_form = new AddItemFormView($data, $preset_values);
     }

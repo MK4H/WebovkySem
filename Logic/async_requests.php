@@ -2,14 +2,18 @@
 require_once('Logic/request_base.php');
 require_once('FrontEnd/errors.php');
 
-class ChangeAmountRequest extends Request {
-    private $data;
+abstract class AsyncRequest extends Request {
+    public function endWithError(Exception $e) {
+        end_with_TEXT_error_ex($e);
+    }
+}
 
-    public function __construct(ShopData $shop_data) {
-        $this->data = $shop_data;
+class ChangeAmountRequest extends AsyncRequest {
+
+    public function __construct() {
     }
     
-    public function execute() {
+    public function execute(Shop $data) {
         $item_id = filter_input(INPUT_POST, 'item_id', FILTER_VALIDATE_INT);
         $new_amnt = filter_input(INPUT_POST, 'new_amount', FILTER_VALIDATE_INT);
     
@@ -18,8 +22,8 @@ class ChangeAmountRequest extends Request {
         }
     
         try {
-            $this->data->setItemAmount($item_id, $new_amnt);
-            $item = $this->data->getItem($item_id);
+            $data->setItemAmount($item_id, $new_amnt);
+            $item = $data->getItem($item_id);
         }
         catch(Exception $e) {
             end_with_TEXT_error_ex($e);
@@ -41,14 +45,12 @@ class ChangeAmountRequest extends Request {
     }
 }
 
-class ChangePositionRequest extends Request {
-    private $data;
+class ChangePositionRequest extends AsyncRequest {
 
-    public function __construct(ShopData $shop_data) {
-        $this->data = $shop_data;
+    public function __construct() {
     }
     
-    public function execute() {
+    public function execute(Shop $data) {
         $item_id = filter_input(INPUT_POST,'item_id', FILTER_VALIDATE_INT);
         $end_pos = filter_input(INPUT_POST,'end_pos', FILTER_VALIDATE_INT);
     
@@ -58,14 +60,14 @@ class ChangePositionRequest extends Request {
     
     
         try {
-            $this->data->changePosition($item_id, $end_pos);
+            $data->changePosition($item_id, $end_pos);
         }
         catch(Exception $e) {
             end_with_TEXT_error_ex($e);
         }
 
         
-        $table = new TableView($this->data);
+        $table = new TableView($data);
         $table->render();
     }
 
@@ -81,14 +83,12 @@ class ChangePositionRequest extends Request {
     }
 }
 
-class DeleteItemRequest extends Request {
-    private $data;
+class DeleteItemRequest extends AsyncRequest {
 
-    public function __construct(ShopData $shop_data) {
-        $this->data = $shop_data;
+    public function __construct() {
     }
     
-    public function execute() {
+    public function execute(Shop $data) {
         $item_id = filter_input(INPUT_POST,'item_id', FILTER_VALIDATE_INT);
 
         if (($errors = $this->check_params($item_id)) !== true) {   
@@ -96,13 +96,13 @@ class DeleteItemRequest extends Request {
         }
     
         try {
-            $this->data->removeItem($item_id);
+            $data->removeItem($item_id);
         }
         catch(Exception $e) {
             end_with_TEXT_error_ex($e);
         }
     
-        $table = new TableView($this->data);
+        $table = new TableView($data);
         $table->render();
     }
 

@@ -1,6 +1,6 @@
 <?php
 //Thanks to only index.php receiving request, all paths should be relative to it
-include("Logic/db_config.php");
+require("db_config.php");
 $conn_string = "mysql:host={$db_config['server']};dbname={$db_config['database']}";
 $user = $db_config['login'];
 $passwd = $db_config['password'];

@@ -1,22 +1,21 @@
 <?php
 require_once("FrontEnd/errors.php");
+require_once("Logic/db_access.php");
 require_once("Logic/data_model.php");
 require_once("Logic/browser_requests.php");
 require_once("Logic/async_requests.php");
 require_once("FrontEnd/views.php");
 
 try {
-    $data = new ShopData();
-
     $handlers = [
         'GET' => [
-            'default' => new GetPageRequest($data)
+            'default' => new GetPageRequest()
         ],
         'POST' => [
-            'add_item' => new AddItemRequest($data),
-            'change_amount' => new ChangeAmountRequest($data),
-            'change_position' => new ChangePositionRequest($data),
-            'delete_item' => new DeleteItemRequest($data)
+            'add_item' => new AddItemRequest(),
+            'change_amount' => new ChangeAmountRequest(),
+            'change_position' => new ChangePositionRequest(),
+            'delete_item' => new DeleteItemRequest()
         ]  
     ];
   
@@ -27,23 +26,20 @@ try {
     }
     
     $method_handlers = $handlers[$method];
-    if (!isset($_GET['action'])) {
-        if (isset($method_handlers['default'])) {
-            $method_handlers['default']->execute();
-            exit;
-        }
-        else {
-            end_with_HTML_error(400, "Invalid request to ${method}"); 
-        }
-    }
+    $action = isset($_GET['action']) ? $_GET['action'] : 'default';
     
-    $action = $_GET['action'];
-
     if (!isset($method_handlers[$action])) {
         end_with_HTML_error(400, "Invalid request to ${method}"); 
     }
 
-    $method_handlers[$action]->execute();
+    try {
+        $data = new ShopData(new PDODB());  
+        $method_handlers[$action]->execute($data);  
+    }
+    catch(DBException $e) {
+        $method_handlers[$action]->endWithError($e);
+    }
+    
 }
 catch(Exception $e) {
     $message = $e->getMessage();
