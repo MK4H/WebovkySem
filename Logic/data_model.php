@@ -16,7 +16,6 @@ interface Shop {
 class ShopData implements Shop {
 
     private $db;
-    //TODO: Make lastError method, that returns last error that happened
 
     public function __construct(DB $db) {
         $this->db = $db;

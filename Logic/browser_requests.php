@@ -85,7 +85,6 @@ class GetPageRequest extends BrowserRequest {
     }
 
     public function execute(Shop $data) {
-        //TODO: React if the query params are wrong
         $preset_values = [];
         $type_name = filter_input(INPUT_GET,'type_name');
         if ($type_name !== null) {

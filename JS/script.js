@@ -45,7 +45,7 @@ class Row {
         let amnt_edit = this.element.getElementsByClassName("amnt_edit")[0];
           
         let data = new FormData();
-        //TODO: Validate that its a positive number
+        //Validate in HTML
         let new_amnt = amnt_edit.value;
     
         if (new_amnt <= 0) {

@@ -87,7 +87,6 @@ class AddItemFormView extends View {
     private $preset_amount;
 
     public function __construct(Shop $data, array $preset_values) {
-        //TODO: Catch possible exceptions and show them
         $suggestions = $data->getSuggestions("");
 
         $this->suggs = [];

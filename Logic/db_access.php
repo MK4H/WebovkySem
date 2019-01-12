@@ -340,8 +340,11 @@ class PDODB implements DB {
                 throw new ArgumentException("Item with the given id does not exist", 422);
             }
     
-            //TODO: Flags to filter_var
-            if (($amount = filter_var($amount, FILTER_VALIDATE_INT)) === null) {
+            if (($amount = filter_var($amount, FILTER_VALIDATE_INT, [
+                "options" => [
+                    "min_range" => 1
+                ]
+            ])) === null) {
                 $this->logDataError("getItemAmount");
                 throw new DataException("Invalid data retrived from DB", 500);
             }
@@ -397,7 +400,6 @@ class PDODB implements DB {
                 throw new DBException("DB: Invalid DB schema, missing id", 500);
             }
     
-            //TODO: Add flags to validation
             if (($value = filter_var($db_res['id'], FILTER_VALIDATE_INT)) === null) {
                 $this->logDataError("ID was not int or not present");
                 throw new DataException("Invalid data stored in the database", 500);
@@ -470,7 +472,6 @@ class PDODB implements DB {
             }
             $position = $db_res['position'];
     
-            //TODO: Add flags
             $val = filter_var($position, FILTER_VALIDATE_INT, [
                 'options' => [
                     'min_range' => 0
