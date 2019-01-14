@@ -100,9 +100,13 @@ class GetPageRequest extends BrowserRequest {
             end_with_HTML_error(422, "Type name and type name error cannot be both set", "Malformed query", "Malformed query");
         }
 
-        $amount = filter_input(INPUT_GET,'amount', FILTER_VALIDATE_INT);
+        $amount = filter_input(INPUT_GET,'amount', FILTER_VALIDATE_INT, [
+            'options' => [
+                'min_range' => 1
+            ]
+        ]);
         if ($amount !== null && $amount !== false) {
-            $preset_values['type_name_error'] = urldecode($type_name_error);
+            $preset_values['amount'] = urldecode($amount);
         }
 
         $amount_error = filter_input(INPUT_GET,'amount_error');

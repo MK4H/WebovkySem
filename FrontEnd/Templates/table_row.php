@@ -1,4 +1,4 @@
-<tr item_id="<?= $this->id ?>" pos="<?= $this->pos ?>" draggable="true" class="item_row">
+<tr data-item_id="<?= $this->id ?>" data-pos="<?= $this->pos ?>" draggable="true" class="item_row">
 
     <td class="name_td"><?= $this->name ?></td>
     <td class="amnt_td">

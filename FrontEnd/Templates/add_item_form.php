@@ -5,7 +5,7 @@
         <datalist id="item_types">
             <?php 
                 foreach ($this->suggs as $sugg) {
-                    echo "<option value=\"${sugg}\"/>";
+                    echo "<option value=\"${sugg}\"></option>\n";
                 }
              ?>
         </datalist>

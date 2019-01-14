@@ -45,7 +45,7 @@ class Row {
         let amnt_edit = this.element.getElementsByClassName("amnt_edit")[0];
           
         let data = new FormData();
-        //Validate in HTML
+
         let new_amnt = amnt_edit.value;
     
         if (new_amnt <= 0) {
@@ -79,11 +79,14 @@ class Row {
     }
     
     cancelEditAmount() {
+        let amnt_edit = this.element.getElementsByClassName("amnt_edit")[0];
+        amnt_edit.classList.remove("error"); 
+        amnt_edit.value = "";
         this._switchAmntEditVis(false);
     }
 
     _init() {
-        this.item_id = this.element.getAttribute("item_id");
+        this.item_id = this.element.getAttribute("data-item_id");
 
         let amnt_text_holder = this.element.getElementsByClassName("amnt_text_holder")[0];
         let amnt_edit_holder = this.element.getElementsByClassName("amnt_edit_holder")[0];
@@ -203,7 +206,7 @@ function allowDrop(event) {
 }
 
 function dragStart(event) {
-    let item_id = this.getAttribute("item_id");
+    let item_id = this.getAttribute("data-item_id");
     event.dataTransfer.setData("text/plain", item_id);
 }
 
@@ -212,7 +215,7 @@ function drop(event) {
     let dragged_item_id = event.dataTransfer.getData("text/plain");
     event.dataTransfer.clearData();
     
-    let endPos = this.getAttribute("pos");
+    let endPos = this.getAttribute("data-pos");
 
     let data = new FormData();
     data.append("item_id", dragged_item_id);

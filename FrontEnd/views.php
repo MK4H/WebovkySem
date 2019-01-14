@@ -106,7 +106,7 @@ class AddItemFormView extends View {
         }
 
         if (isset($preset_values['amount'])) {
-            $this->preset_amount = "value=\"" . htmlspecialchars($amount) . "\"";
+            $this->preset_amount = "value=\"" . htmlspecialchars($preset_values['amount']) . "\"";
         }
         else if (isset($preset_values['amount_error'])) {
             $this->preset_amount = "class=\"error\"";
