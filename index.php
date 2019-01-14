@@ -1,6 +1,6 @@
 <?php
 require_once("FrontEnd/errors.php");
-require_once("Logic/db_access.php");
+require_once("Logic/pdo_db.php");
 require_once("Logic/data_model.php");
 require_once("Logic/browser_requests.php");
 require_once("Logic/async_requests.php");

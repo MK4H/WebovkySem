@@ -1,7 +1,7 @@
 <?php
 
 require_once("Logic/exceptions.php");
-require_once("Logic/db_access.php");
+require_once("Logic/db.php");
 
 interface Shop {
     public function getSuggestions(string $forText) : array;

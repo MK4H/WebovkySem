@@ -13,6 +13,14 @@ h1, h2, h3 {
     text-align: center;
 }
 
+main > h1 {
+    border: 1px double grey;
+}
+
+#add_item_sec > h2 {
+    margin-bottom: 10px;
+}
+
 /*
 Table style
 */
