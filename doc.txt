@@ -1,0 +1,39 @@
+Semestrální práce pro předmět Webové aplikace(NSWI142).
+
+PHP-logika
+
+
+Hlavní myšlenkou implementace logiky bylo vytvořit skupinu
+elementárních operací pomocí SQL a z nich poté skládat 
+složitější operace, nezávislé na použité databázy.
+Za tímto účelem jsem vytvořil interface DB, který specifikuje
+elementární operace potřebné pro implementaci logiky. 
+
+Postupem času jsem do SQL přesunul většinu logiky, abych
+omezil velikost dat putujících mezi HTTP serverem a DB serverem,
+a proto vlastní logika v data_model.php je často jenom
+zavolání jedné funkce na DB.
+
+Pro jednoduší přenositelnost mezi různými databázemi je vrstva
+komunikující s databází napsána nad PDO a všechen kód SQL je
+centralizován do jednoho souboru, sql_pdo_mysql.php, jehož název
+celkem jasně ukazuje, že v něm je SQL kód pro PDO komunikující s 
+mysql databází. Změnou tohoto jednoho souboru je možné přesunout 
+se na jinou databázi. 
+
+V případě, že by implementace pomocí PDO nevyhovovala, pracuje 
+zbytek php kódu s interfacem DB, který je možné implementovat 
+dalšímy způsoby.
+
+
+Javascript
+
+Implementace Javascriptu je založena na třídách Table a Row, které
+zabalují manipulaci s DOM elementy. Jediným problémem aktuální implementace
+je globální proměnná table, ale vzhledem k tomu, že tabulka tam opravdu bude 
+jenom jedna, to není zas až tak špatné.
+
+Změna pořadí je implementována pomocí standardního drag-and-drop, které je 
+aktivováno na každém řádku.
+
+TODO: More
